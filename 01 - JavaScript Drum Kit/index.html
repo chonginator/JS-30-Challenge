@@ -1,0 +1,118 @@
+<!--
+  Questions:
+
+  - What should you register an event handler on when an event is
+  not associated with any particular DOM element, like a key press? document?
+  window?
+    - It doesn't seem to really matter, as long as it supports the event handler
+    you're looking to create. 'document' and 'window' both support 'keydown'
+    event handlers. The full lists can be found here:
+       https://developer.mozilla.org/en-US/docs/Web/API/Window#Event_handlers
+       https://developer.mozilla.org/en-US/docs/Web/API/Document#Event_handlers
+  - What's the difference between keydown, keypress and keyup events?
+    - A keypress event has been replaced by keydown. A keydown event is fired when a
+    key is pressed. A key up event is fired when a key is released.
+  - What's the difference between a DOMString (returned by .code) and a regular
+  String?
+    - For all practical purposes, they are essentially the same thing.
+  - Why don't you need curly braces for an inline if statement?
+    - For single-line statements, it's a matter of personal preference as they
+    work with curly braces or not. Why it works is another question.
+  - How do you make the audio more responsive to key presses?
+    - The reason why it is unresponsive to multiple successive key presses is
+    because an audio file that is already playing won't be played again. So the
+    solution is to set the audio file back to the beginning whenever a keypress
+    occurs. Note that this is before play() is called so that successive key
+    presses will reset the audio file before playing it again
+  - When adding and removing the class of 'playing' on a key <div>, how do you
+    make it not get removed so fast, so that the proper styles can actually be
+    applied?
+      - It turns out that you can listen for the end of a CSS transition, called
+      'transitionend'. This event is a part of the HTMLElement interface.
+
+  - When testing whether a value is empty, you can just use the negation logical
+  operator (!), instead of something like == null or != null
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Drum Kit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+  <div class="keys">
+    <div data-key="65" class="key">
+      <kbd>A</kbd>
+      <span class="sound">clap</span>
+    </div>
+    <div data-key="83" class="key">
+      <kbd>S</kbd>
+      <span class="sound">hihat</span>
+    </div>
+    <div data-key="68" class="key">
+      <kbd>D</kbd>
+      <span class="sound">kick</span>
+    </div>
+    <div data-key="70" class="key">
+      <kbd>F</kbd>
+      <span class="sound">openhat</span>
+    </div>
+    <div data-key="71" class="key">
+      <kbd>G</kbd>
+      <span class="sound">boom</span>
+    </div>
+    <div data-key="72" class="key">
+      <kbd>H</kbd>
+      <span class="sound">ride</span>
+    </div>
+    <div data-key="74" class="key">
+      <kbd>J</kbd>
+      <span class="sound">snare</span>
+    </div>
+    <div data-key="75" class="key">
+      <kbd>K</kbd>
+      <span class="sound">tom</span>
+    </div>
+    <div data-key="76" class="key">
+      <kbd>L</kbd>
+      <span class="sound">tink</span>
+    </div>
+  </div>
+
+  <audio data-key="65" src="sounds/clap.wav"></audio>
+  <audio data-key="83" src="sounds/hihat.wav"></audio>
+  <audio data-key="68" src="sounds/kick.wav"></audio>
+  <audio data-key="70" src="sounds/openhat.wav"></audio>
+  <audio data-key="71" src="sounds/boom.wav"></audio>
+  <audio data-key="72" src="sounds/ride.wav"></audio>
+  <audio data-key="74" src="sounds/snare.wav"></audio>
+  <audio data-key="75" src="sounds/tom.wav"></audio>
+  <audio data-key="76" src="sounds/tink.wav"></audio>
+
+<script>
+
+  function playSound(event) {
+    const audio = document.querySelector(`audio[data-key="${event.keyCode}"]`);
+    const key = document.querySelector(`.key[data-key="${event.keyCode}"]`);
+
+    if(!audio) return;
+    audio.play();
+    audio.currentTime = 0;
+
+    key.classList.add("playing");
+  }
+
+  // Activate CSS transition effects on onscreen keys
+  const keys = document.querySelector(".keys");
+  keys.addEventListener("transitionend", (event) => {
+    event.target.classList.remove("playing");
+  });
+
+  // Play audio on 'keydown' events
+  document.addEventListener("keydown", playSound);
+</script>
+</body>
+</html>
