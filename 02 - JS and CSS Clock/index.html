@@ -1,3 +1,10 @@
+<!-- Questions:
+- How do you run a function every so often in JS?
+  - There is a function called setInterval, which takes a function and a delay
+  as its arguments.
+    - How is setInterval available globally?
+ -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,12 +69,29 @@
       background: black;
       position: absolute;
       top: 50%;
+      transform-origin: 100%;
+      transform: rotate(90deg);
+      transition: all 0.05s cubic-bezier(0.1, 2.7, 0.58, 1);
     }
 
   </style>
 
   <script>
+  const secHand = document.querySelector('.second-hand');
+  const minHand = document.querySelector('.min-hand');
+  const hourHand = document.querySelector('.hour-hand');
 
+  function setDate() {
+    const now = new Date();
+
+    console.log(`Hour: ${now.getHours()}, Minute: ${now.getMinutes()}, Seconds: ${now.getSeconds()}`);
+    secHand.setAttribute('style', `transform: rotate(${90 + (now.getSeconds() * 6)}deg)`);
+    minHand.setAttribute('style', `transform: rotate(${90 + (now.getMinutes() * 6)}deg)`);
+    hourHand.setAttribute('style', `transform: rotate(${90 + (now.getHours() * 30)}deg)`);
+
+  }
+
+  setInterval(setDate, 1000);
 
   </script>
 </body>
