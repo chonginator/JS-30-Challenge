@@ -1,3 +1,10 @@
+<!-- Unanswered Questions:
+- If you use event delegation in this case to register event handlers on each
+panel you'd have to check what tag the click event occurs on and add the open
+class accordingly. If the <p>s are clicked on then toggling the class 'open' on
+it won't work. If you assign event handlers on each panel, on the other hand,
+click events on elements other than the panel itself will 'bubble' up.
+ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,11 +21,11 @@
       font-size: 20px;
       font-weight: 200;
     }
-    
+
     body {
       margin: 0;
     }
-    
+
     *, *:before, *:after {
       box-sizing: inherit;
     }
@@ -26,6 +33,7 @@
     .panels {
       min-height: 100vh;
       overflow: hidden;
+      display: flex;
     }
 
     .panel {
@@ -43,6 +51,11 @@
       font-size: 20px;
       background-size: cover;
       background-position: center;
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     .panel1 { background-image:url(https://source.unsplash.com/gYl-UtwNg_I/1500x1500); }
@@ -56,21 +69,44 @@
       margin: 0;
       width: 100%;
       transition: transform 0.5s;
+      display: flex;
+      flex: 1 0 auto;
+      justify-content: center;
+      align-items: center;
     }
+
+    .panel p:first-child {
+      transform: translateY(-100%);
+    }
+
+    .panel.open-active p:first-child {
+      transform: translateY(0);
+    }
+
+    .panel p:last-child {
+      transform: translateY(100%);
+    }
+
+    .panel.open-active p:last-child {
+      transform: translateY(0);
+    }
+
 
     .panel p {
       text-transform: uppercase;
       font-family: 'Amatic SC', cursive;
       text-shadow: 0 0 4px rgba(0, 0, 0, 0.72), 0 0 14px rgba(0, 0, 0, 0.45);
       font-size: 2em;
+
     }
-    
+
     .panel p:nth-child(2) {
       font-size: 4em;
     }
 
     .panel.open {
       font-size: 40px;
+      flex: 5;
     }
 
   </style>
@@ -105,6 +141,21 @@
   </div>
 
   <script>
+    function toggleOpen() {
+      this.classList.toggle('open')  ;
+    }
+
+    function toggleActive(event) {
+
+      console.log(event.propertyName);
+      if (event.propertyName.includes('flex')) {
+        this.classList.toggle('open-active');
+      }
+    }
+
+    const panels = document.querySelectorAll('.panel');
+    panels.forEach(panel => panel.addEventListener('click', toggleOpen))
+    panels.forEach(panel => panel.addEventListener('transitionend', toggleActive))
 
   </script>
 
