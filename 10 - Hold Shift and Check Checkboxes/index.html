@@ -96,6 +96,31 @@
   </div>
 
 <script>
+
+let lastChecked;
+function handleCheck(e) {
+  // Select or deselect multiple checkboxes if shift key was held down
+  let inBetween = false;
+  if (e.shiftKey && this.checked) {
+    // let checkValue = this.checked;
+    checkboxes.forEach(checkbox => {
+      console.log(checkbox);
+      if (checkbox === this || checkbox === lastChecked) {
+        inBetween = !inBetween;
+        console.log('Checking in between');
+      }
+      if (inBetween) {
+        checkbox.checked = true;
+      }
+    });
+  }
+  lastChecked = this;
+}
+
+let checkboxes = document.querySelectorAll('.inbox input[type="checkbox"]');
+checkboxes.forEach(checkbox => {
+  checkbox.addEventListener('click', handleCheck);
+});
 </script>
 </body>
 </html>
